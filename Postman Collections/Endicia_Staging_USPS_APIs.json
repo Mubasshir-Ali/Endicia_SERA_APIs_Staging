@@ -1,0 +1,858 @@
+{
+	"info": {
+		"_postman_id": "31064204-e8f8-4096-a174-d505fc4b2191",
+		"name": "Endicia REST API (Test Environment) - EDJ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Get Authorization Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9e9ab943-dc6f-4ee3-b41c-c78a7d0b8198",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8e36adbc-5543-4c5e-b8c7-6416827849d9",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "04297b7c-a840-4572-9629-874646e33012",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": {
+								"client_authentication": "header",
+								"useBrowser": false,
+								"authUrl": "{{endicia_base_url}}/authorize",
+								"accessTokenUrl": "",
+								"redirect_uri": "{{redirect_uri}}",
+								"clientId": "{{client_id}}",
+								"tokenName": "auth code",
+								"scope": "offline_access",
+								"addTokenTo": "header"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{endicia_base_url}}/authorize?response_type={{response_type}}&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope={{scope}}",
+							"host": [
+								"{{endicia_base_url}}"
+							],
+							"path": [
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "{{response_type}}"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirect_uri}}"
+								},
+								{
+									"key": "scope",
+									"value": "{{scope}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "74e58431-60d5-4e3f-97e6-49c798822804",
+								"exec": [
+									"const jsonData = JSON.parse(pm.response.text());\r",
+									"pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+									"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);\r",
+									"pm.environment.set(\"access_token\", jsonData.access_token);\r",
+									"pm.environment.set(\"refresh_token\", jsonData.refresh_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "cf5268b1-5935-4028-a6d5-4eeb0cf1416c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "10ec582c-2a0a-4c25-afdf-e82aed45c056",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "{{grant_type}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirect_uri}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{endicia_base_url}}/oauth/token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token Using Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eb03aff2-b283-448b-a2cd-ddbfe14035a8",
+								"exec": [
+									"const jsonData = JSON.parse(pm.response.text());\r",
+									"// pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+									"// pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);\r",
+									"pm.environment.set(\"access_token\", jsonData.access_token);\r",
+									"pm.environment.set(\"refresh_token\", jsonData.refresh_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "7e7317a0-f39e-4b72-8732-ef4f7b5925aa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"{{grant_type}}\",\r\n    \"client_id\": \"{{client_id}}\",\r\n    \"client_secret\": \"{{client_secret}}\",\r\n    \"code\": \"{{code}}\",\r\n    \"redirect_uri\": \"{{redirect_uri}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{endicia_base_url}}/oauth/token"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f4286cb7-5100-4448-8ba3-bf7d31b16603",
+								"exec": [
+									"const jsonData = JSON.parse(pm.response.text());\r",
+									"pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+									"pm.environment.set(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dfc2c724-a1f1-47f9-9edb-de2cabd51260",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "0c1ce59b-478e-43f1-b5c7-03cfc16561ea",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "{{refresh_token_grant_type}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{endicia_base_url}}/oauth/token"
+					},
+					"response": []
+				}
+			],
+			"id": "ad442034-c1e9-413b-a6c7-692f2752fca0"
+		},
+		{
+			"name": "Balance",
+			"id": "6ff67e3b-470f-4207-a5aa-50d953275337",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/balance"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Rates",
+			"id": "684e5ea8-ab00-4f78-9b16-8b90006638f6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"from_address\": {\r\n//         \"name\": \"SERA REST\",\r\n//         \"address_line1\": \"1990 E Grand Ave\",\r\n//         \"city\": \"El Segundo\",\r\n//         \"state_province\": \"CA\",\r\n//         \"postal_code\": \"90245\",\r\n//         \"country_code\": \"US\",\r\n//         \"email\": \"no-reply@stamps.com\"\r\n//     },\r\n//     \"to_address\": {\r\n//         \"name\": \"SERA REST\",\r\n//         \"address_line1\": \"1990 E Grand Ave\",\r\n//         \"city\": \"El Segundo\",\r\n//         \"state_province\": \"CA\",\r\n//         \"postal_code\": \"90245\",\r\n//         \"country_code\": \"US\",\r\n//         \"email\": \"no-reply@stamps.com\"\r\n//     },\r\n//  /*   \"service_type\": \"\",\r\n//     \"package_code\": \"\",*/\r\n//     \"package\": {\r\n//         \"weight\": 24.0,\r\n//         \"weight_unit\": \"ounce\"\r\n//     },\r\n//     \"ship_date\": \"{{$isoTimestamp}}\",\r\n//     \"advanced_options\": {\r\n//         \"non_machinable\": false,\r\n//         \"saturday_delivery\": false,\r\n//         \"delivered_duty_paid\": false,\r\n//         \"hold_for_pickup\": false,\r\n//         \"certified_mail\": false,\r\n//         \"return_receipt\": false,\r\n//         \"return_receipt_electronic\": false,\r\n//         /*\"collect_on_delivery\": {\r\n//             \"amount\": 0,\r\n//             \"currency\": \"usd\"\r\n//         },\r\n//         \"registered_mail\": {\r\n//       \"amount\": 0,\r\n    \r\n//     },\r\n//     \"sunday_delivery\": false,\r\n//     \"holiday_delivery\": false,\r\n//     \"1030_delivery\": false,\r\n//     \"restricted_delivery\": true,\r\n//     \"notice_of_non_delivery\": false,\r\n//      \"special_handling\": {\r\n//             \"special_contents_type\": \"perishables\",\r\n//             \"fragile\": true\r\n//         },\r\n//         \"no_label\": {\r\n//             \"is_drop_off\": true,\r\n//             \"is_prepackaged\": true,\r\n//         },\r\n//         \"is_pay_on_use\": false,\r\n//         \"return_options\": {\r\n//             \"outbound_label_id\": \"string\"\r\n//         }*/\r\n//     }\r\n// }\r\n\r\n{\r\n  \"from_address\": {\r\n    \"postal_code\": \"92802\"\r\n  },\r\n  \"to_address\": {\r\n    \"postal_code\": \"32830\"\r\n  },\r\n  \"package\": {\r\n    \"packaging_type\": \"large_envelope\",\r\n    \"weight\": 24,\r\n    \"weight_unit\": \"ounce\"\r\n  },\r\n  \"ship_date\": \"{{$isoTimestamp}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/rates/"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Domestic Label",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0cdb072-4460-4174-a138-0a916ac55c8f",
+						"exec": [
+							"// var jsonData = JSON.parse(responseBody);\r",
+							"// postman.setEnvironmentVariable(\"label_id\", jsonData.label_id);\r",
+							"\r",
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "bde84417-0544-4eee-af85-c403fdebfc5d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"from_address\": {\r\n     \"name\": \"Jone Deo\",\r\n     \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n     \"city\": \"Moore\",\r\n     \"state_province\": \"OK\",\r\n     \"postal_code\": \"92802\",\r\n     \"country_code\": \"US\",\r\n     \"email\": \"test@edjy.com\"\r\n   },\r\n   \"to_address\": {\r\n     \"name\": \"TEST CUSTOMER D\",\r\n     \"address_line1\": \"17069 Brookside BLVD NE\",\r\n     \"city\": \"Lake Forest Park\",\r\n     \"state_province\": \"WA\",\r\n     \"postal_code\": \"32830\",\r\n     \"country_code\": \"US\",\r\n     \"email\": \"minerva.m@test.com\"\r\n   },\r\n   \"service_type\": \"usps_ground_advantage\",\r\n   \"package\": {\r\n     \"packaging_type\": \"package\",\r\n     \"weight\": 4,\r\n     \"weight_unit\": \"ounce\"\r\n   },\r\n   \"ship_date\": \"{{$isoTimestamp}}\",\r\n   \"is_test_label\": true\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/labels"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Domestic Label V1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0cdb072-4460-4174-a138-0a916ac55c8f",
+						"exec": [
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "a1a8aabb-1559-466d-9ee3-0e1e13f2b13c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"Edjy LLC\",\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"2119 Riverwalk\",\r\n        \"address_line2\": \"Dr\",\r\n        \"address_line3\": \"STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"return_address\": {\r\n        \"company_name\": \"Edjy LLC\",\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"317 Metty\",\r\n        \"address_line2\": \"Dr\",\r\n        \"address_line3\": \"Suite 4\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"service_type\": \"usps_ground_advantage\",\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 69.99,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"is_return_label\": true,\r\n    \"customs\": {\r\n        \"contents_type\": \"gift\",\r\n        \"contents_description\": \"Gift car\",\r\n        \"non_delivery_option\": \"return_to_sender\",\r\n        \"sender_info\": {\r\n            \"license_number\": \"lic123456\",\r\n            \"certificate_number\": \"cet123456\",\r\n            \"invoice_number\": \"8981664181\",\r\n            \"internal_transaction_number\": \"9515623967\",\r\n            \"passport_number\": \"H0454KJY12\",\r\n            \"passport_issue_date\": \"2001-02-17\",\r\n            \"passport_expiration_date\": \"2021-02-18\"\r\n        },\r\n        \"recipient_info\": {\r\n            \"tax_id\": \"tax124565\"\r\n        },\r\n        \"customs_items\": [\r\n            {\r\n                \"item_description\": \"item\",\r\n                \"quantity\": 2,\r\n                \"unit_value\": {\r\n                    \"amount\": 1,\r\n                    \"currency\": \"usd\"\r\n                },\r\n                \"item_weight\": 1,\r\n                \"weight_unit\": \"ounce\",\r\n                \"country_of_origin\": \"US\",\r\n                \"sku\": \"sku123446\"\r\n            }\r\n        ]\r\n    },\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"advanced_options\": {\r\n        \"non_machinable\": true,\r\n        \"saturday_delivery\": false,\r\n        \"delivered_duty_paid\": false,\r\n        \"hold_for_pickup\": false,\r\n        \"certified_mail\": false,\r\n        \"return_receipt\": false,\r\n        \"return_receipt_electronic\": false,\r\n        \"sunday_delivery\": false,\r\n        \"holiday_delivery\": false,\r\n        \"1030_delivery\": false,\r\n        \"restricted_delivery\": false,\r\n        \"notice_of_non_delivery\": false,\r\n        \"is_instalabel\": false,\r\n        \"is_pay_on_use\": false\r\n    },\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"url\"\r\n    },\r\n    \"references\": {\r\n        \"printed_message1\": \"Printed message 1 with 36 characters123\",\r\n        \"printed_message2\": \"Prntd msg 2 with 31 characters123\",\r\n        \"printed_message3\": \"Prntd msg 2 with 31 characters123\",\r\n        \"cost_code_id\": 0,\r\n        \"reference1\": \"reference 1\",\r\n        \"reference2\": \"reference 2\",\r\n        \"reference3\": \"reference 3\",\r\n        \"reference4\": \"reference 4\"\r\n    },\r\n    \"is_test_label\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/labels"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Domestic Label V2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0cdb072-4460-4174-a138-0a916ac55c8f",
+						"exec": [
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);\r",
+							"pm.collectionVariables.set(\"tracking_number\", jsonData.tracking_number);\r",
+							"pm.environment.set(\"label_id\", jsonData.label_id);\r",
+							"pm.environment.set(\"tracking_number\", jsonData.tracking_number);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "799edbd1-1f77-4b75-9b14-a7336c061a5d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"Edjy LLC\",\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"2119 Riverwalk\",\r\n        \"address_line2\": \"Dr\",\r\n        \"address_line3\": \"STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"return_address\": {\r\n        \"company_name\": \"Edjy LLC\",\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"317 Metty\",\r\n        \"address_line2\": \"Dr\",\r\n        \"address_line3\": \"Suite 4\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"service_type\": \"usps_ground_advantage\",\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 69.99,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"is_return_label\": true,\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"advanced_options\": {\r\n        \"non_machinable\": true,\r\n        \"saturday_delivery\": false,\r\n        \"delivered_duty_paid\": false,\r\n        \"hold_for_pickup\": false,\r\n        \"certified_mail\": false,\r\n        \"return_receipt\": false,\r\n        \"return_receipt_electronic\": false,\r\n        \"sunday_delivery\": false,\r\n        \"holiday_delivery\": false,\r\n        \"1030_delivery\": false,\r\n        \"restricted_delivery\": false,\r\n        \"notice_of_non_delivery\": false,\r\n        \"is_instalabel\": false,\r\n        \"is_pay_on_use\": false\r\n    },\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"url\"\r\n    },\r\n    \"is_test_label\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/labels"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Domestic Label V3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0cdb072-4460-4174-a138-0a916ac55c8f",
+						"exec": [
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);\r",
+							"pm.collectionVariables.set(\"tracking_number\", jsonData.tracking_number);\r",
+							"pm.environment.set(\"label_id\", jsonData.label_id);\r",
+							"pm.environment.set(\"tracking_number\", jsonData.tracking_number);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "cf52d1af-ea9e-421c-bbc6-91553f11826d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"EDJY LLC\",\r\n        \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"name\": \"TEST CUSTOMER D\",\r\n        \"address_line1\": \"17069 Brookside BLVD NE\",\r\n        \"city\": \"Lake Forest Park\",\r\n        \"state_province\": \"WA\",\r\n        \"postal_code\": \"32830\",\r\n        \"country_code\": \"US\",\r\n        \"email\": \"minerva.m@test.com\"\r\n    },\r\n    \"service_type\": \"usps_ground_advantage\",\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 69.99,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"ship_date\": \"2024/10/30\",\r\n    \"is_return_label\": false,\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"base64\"\r\n    },\r\n    \"is_test_label\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/labels"
+			},
+			"response": []
+		},
+		{
+			"name": "Create SCAN Form Label Shipment",
+			"id": "ec77ac42-a554-4e01-9252-f91b8dd06be3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n        \"city\": \"Moore\",\r\n        \"state_province\": \"OK\",\r\n        \"postal_code\": \"92802\",\r\n        \"country_code\": \"US\",\r\n        \"email\": \"michael.m@test.com\"\r\n    },\r\n    // \"carrier\": \"usps\",\r\n    // \"ship_date\": \"2021-03-17T00:00:00\",\r\n    // \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"label_options\": {\r\n        \"label_format\": \"Pdf\",\r\n        \"print_instructions\": true\r\n    },\r\n    \"label_ids\": [\r\n        \"da5cfafc-cddd-490e-9ba0-719c53974635\",\r\n        \"ea786ce2-5a80-48a3-88b9-3d0c182b3a1b\",\r\n        \"c735a7df-5e9d-4fdc-be67-b59cec3a6293\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/manifests"
+			},
+			"response": []
+		},
+		{
+			"name": "Create SCAN Form Label Shipment V1",
+			"id": "ace06710-a642-458d-8d04-70cb79dd7619",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"Edjy LLC\",\r\n        \"name\": \"Jone Deo\",\r\n        \"address_line1\": \"2119 Riverwalk\",\r\n        \"address_line2\": \"Dr\",\r\n        \"address_line3\": \"STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"label_ids\": [\r\n        \"2a4e045d-9a7d-458d-885a-1017d806f214\",\r\n        \"5b38e4ec-23b1-4431-8c31-89e1fc8d848d\",\r\n        \"4e517d78-61a6-4f66-aa91-f8bdb928a565\"\r\n    ],\r\n    \"label_options\": {\r\n        \"label_format\": \"pdf\",\r\n        \"print_instructions\": true\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/manifests"
+			},
+			"response": []
+		},
+		{
+			"name": "Create SCAN Form Label Shipment V2",
+			"id": "dd84b150-a5f9-4e12-ae80-c5064828f8a6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"EDJY LLC\",\r\n        \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\"\r\n    },\r\n    \"label_ids\": [\r\n        \"efb29486-aae0-4d2a-a356-7b89f0a20c3d\",\r\n        \"232db64e-279b-4993-aee0-0c825517e53d\",\r\n        \"c0a0283a-27b1-42f4-bfdc-262c2418b481\"\r\n    ],\r\n    \"label_options\": {\r\n        \"label_format\": \"pdf\",\r\n        \"print_instructions\": true,\r\n        \"label_output_type\": \"base64\"\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/manifests"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tracking V1",
+			"id": "df04914e-e812-4d72-8e3c-a28019e79185",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/tracking?carrier={{carrier}}&tracking_number={{tracking_number}}",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "carrier",
+							"value": "{{carrier}}"
+						},
+						{
+							"key": "tracking_number",
+							"value": "9434611899563856794528",
+							"disabled": true
+						},
+						{
+							"key": "tracking_number",
+							"value": "{{tracking_number}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {
+			"refreshTokenUrl": "{{endicia_base_url}}/oauth/token",
+			"accessTokenUrl": "{{endicia_base_url}}/oauth/token",
+			"authUrl": "{{endicia_base_url}}/authorize",
+			"client_authentication": "header",
+			"scope": "offline_access",
+			"clientSecret": "{{client_secret}}",
+			"clientId": "{{client_id}}",
+			"redirect_uri": "{{redirect_uri}}",
+			"grant_type": "authorization_code_with_pkce",
+			"tokenName": "Token SERA",
+			"refreshRequestParams": [],
+			"tokenRequestParams": [],
+			"authRequestParams": [],
+			"challengeAlgorithm": "S256",
+			"addTokenTo": "header"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d1bcb95d-ca5b-46e4-9dea-6193288a109a",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "763ced11-c582-4fee-8705-872b5641310f",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "grant_type",
+			"value": "authorization_code",
+			"type": "string"
+		},
+		{
+			"key": "code",
+			"value": "FbN3bchHTVH2RM75vofOcFzsOfHPQhhpJnsJivQThgL4V",
+			"type": "string"
+		},
+		{
+			"key": "redirect_uri",
+			"value": "http://localhost:12345",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiMzg4MGVlMjYtYzhjZi00NzI0LWI0OTYtYmQwYzRmYmVhNjk2IiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozOTA4NzAzLCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM5MDg3MDMiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTcyODUxMDYyMywiZXhwIjoxNzI4NTExNTIzLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIiwiYXpwIjoiZWZOR2h2eTIzQUpPcjA2VThlTDFQSEhFcW5pR3Q0SGgifQ.vYSGyD28LIYfiVtDHSZfsIJYh9b9c-AoUwYENLCkWFLdT8iE8dvJ8hluNVxT1jzadhtu5TD49RRpEV3MwdsrLSYtjWJoJhH3TZA0GSYzHlJy0alre7oyjtJKcbtslGyyX63gS5wxsXB2c7Eg3ndNtiegbAH9u52NY4Yd-lLTq1tnjF4NLEYDwac--Vmxvs1zs93i0enlPIkB81ZTMl1_xELor99EEj-u7pT5h6upqDPJJgJ-KMzCQN0chqm7XzBnUaxxBJ4YaJs7yDo166INU6Lj1xaGidFVkIP6g3lwakGe_xqssM7egHXb6GqOj2l3HmWtws1s3f1C262DNrVzSw",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "JfLd7gYIuTL-9nsblCQdKRi_SrL-USM-jqNHWVWlhACMh",
+			"type": "string"
+		},
+		{
+			"key": "endicia_base_url",
+			"value": "https://signin.stampsendicia.com",
+			"type": "string"
+		},
+		{
+			"key": "response_type",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "scope",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "sera_base_url",
+			"value": "https://api.stampsendicia.com/",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token_grant_type",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "label_id",
+			"value": ""
+		},
+		{
+			"key": "carrier",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tracking_number",
+			"value": ""
+		}
+	]
+}
