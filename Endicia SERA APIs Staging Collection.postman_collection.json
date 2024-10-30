@@ -1,0 +1,1397 @@
+{
+	"info": {
+		"_postman_id": "8d0dc622-03a9-4154-9701-324e88cdb119",
+		"name": "Endicia SERA APIs Staging Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21692687",
+		"_collection_link": "https://netsuite-api-developer.postman.co/workspace/5742138c-e472-4178-9ec4-20d5761b16bf/collection/21692687-8d0dc622-03a9-4154-9701-324e88cdb119?action=share&source=collection_link&creator=21692687"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Get Authorization Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "useBrowser",
+									"value": true,
+									"type": "boolean"
+								},
+								{
+									"key": "authUrl",
+									"value": "{{endicia_base_url}}/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirect_uri}}",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "{{client_id}}",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "auth code",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "offline_access",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{endicia_base_url}}/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=offline_access",
+							"host": [
+								"{{endicia_base_url}}"
+							],
+							"path": [
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirect_uri}}"
+								},
+								{
+									"key": "scope",
+									"value": "offline_access"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(pm.response.text());\r",
+									"pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+									"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "{{grant_type}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "{{redirect_uri}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{endicia_base_url}}/oauth/token",
+							"host": [
+								"{{endicia_base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"grant_type\": \"authorization_code\",\r\n//     \"client_id\": \"\",\r\n//     \"client_secret\": \"\",\r\n//     \"code\": \"\",\r\n//     \"redirect_uri\": \"\"\r\n// }\r\n{\r\n    \"grant_type\": \"{{grant_type}}\",\r\n    \"client_id\": \"{{client_id}}\",\r\n    \"client_secret\": \"{{client_secret}}\",\r\n    \"code\": \"{{code}}\",\r\n    \"redirect_uri\": \"{{redirect_uri}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endicia_base_url}}/oauth/token",
+							"host": [
+								"{{endicia_base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "{{refresh_token_grant_type}}",
+									"description": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{endicia_base_url}}/oauth/token",
+							"host": [
+								"{{endicia_base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/balance",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Funds",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 20.00,\r\n    \"currency\": \"usd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/balance/add-funds",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"balance",
+						"add-funds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rates",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"SERA REST\",\r\n        \"address_line1\": \"1990 E Grand Ave\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"name\": \"SERA REST\",\r\n        \"address_line1\": \"1990 E Grand Ave\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n /*   \"service_type\": \"\",\r\n    \"package_code\": \"\",*/\r\n    \"package\": {\r\n        \"weight\": 24.0,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"advanced_options\": {\r\n        \"non_machinable\": false,\r\n        \"saturday_delivery\": false,\r\n        \"delivered_duty_paid\": false,\r\n        \"hold_for_pickup\": false,\r\n        \"certified_mail\": false,\r\n        \"return_receipt\": false,\r\n        \"return_receipt_electronic\": false,\r\n        /*\"collect_on_delivery\": {\r\n            \"amount\": 0,\r\n            \"currency\": \"usd\"\r\n        },\r\n        \"registered_mail\": {\r\n      \"amount\": 0,\r\n    \r\n    },\r\n    \"sunday_delivery\": false,\r\n    \"holiday_delivery\": false,\r\n    \"1030_delivery\": false,\r\n    \"restricted_delivery\": true,\r\n    \"notice_of_non_delivery\": false,\r\n     \"special_handling\": {\r\n            \"special_contents_type\": \"perishables\",\r\n            \"fragile\": true\r\n        },\r\n        \"no_label\": {\r\n            \"is_drop_off\": true,\r\n            \"is_prepackaged\": true,\r\n        },\r\n        \"is_pay_on_use\": false,\r\n        \"return_options\": {\r\n            \"outbound_label_id\": \"string\"\r\n        }*/\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/rates/",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"rates",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rates ParcelGuard",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"StampsEndicia\",\r\n        \"name\": \"SERA REST\",\r\n        \"address_line1\": \"1990 e grand ave\",\r\n        \"address_line2\": \"\",\r\n        \"address_line3\": \"\",\r\n        \"city\": \"el segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"phone\": \"3104825800\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"StampsEndicia\",\r\n        \"name\": \"SERA REST\",\r\n        \"address_line1\": \"1990 e grand ave\",\r\n        \"address_line2\": \"\",\r\n        \"city\": \"el segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"service_type\": \"usps_priority_mail\",\r\n    \"package\": {\r\n        \"packaging_type\": \"usps_medium_flat_rate_box\",\r\n        \"weight\": 16,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"insurance\": {\r\n        \"insurance_provider\": \"parcel_guard\",\r\n        \"insured_value\": {\r\n            \"amount\": 2000,\r\n            \"currency\": \"usd\"\r\n        }\r\n    },\r\n    \"ship_date\": \"2023-05-14T22:20:20.812Z\",\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/rates/",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"rates",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manifests label_ids",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FROM_ADDRESS\": {\r\n        \"NAME\": \"SERA REST\",\r\n        \"ADDRESS_LINE1\": \"1990 E GRAND AVE\",\r\n        \"CITY\": \"EL SEGUNDO\",\r\n        \"STATE_PROVINCE\": \"CA\",\r\n        \"POSTAL_CODE\": \"90245\",\r\n        \"COUNTRY_CODE\": \"US\",\r\n        \"EMAIL\": \"no-reply@stamps.com\"\r\n    },\r\n    // \"carrier\": \"usps\",\r\n    // \"ship_date\": \"2021-03-17T00:00:00\",\r\n    //\"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"label_options\": {\r\n        \"label_format\": \"Pdf\"\r\n    },\r\n    \"label_ids\": [\r\n        \"42f6dff5-0ac5-40e3-8a7e-2021d6b7f07c\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/manifests",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"manifests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manifests shipdate",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FROM_ADDRESS\": {\r\n        \"NAME\": \"SERA REST\",\r\n        \"ADDRESS_LINE1\": \"1990 E GRAND AVE\",\r\n        \"CITY\": \"EL SEGUNDO\",\r\n        \"STATE_PROVINCE\": \"CA\",\r\n        \"POSTAL_CODE\": \"90245\",\r\n        \"COUNTRY_CODE\": \"US\",\r\n        \"EMAIL\": \"no-reply@stamps.com\"\r\n    },\r\n    \"carrier\": \"usps\",\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"label_options\": {\r\n    \"label_format\": \"pdf\"\r\n}\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/manifests",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"manifests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pickups",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pickup_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"carrier\": \"usps\",\r\n    \"pickup_window\": {\r\n        \"start_at\": \"2022-04-07T00:00:00\",\r\n        \"end_at\": \"2022-04-07T23:59:00\"\r\n    },\r\n    \"pickup_instructions\": \"Knock on door\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/pickups/",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"pickups",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Address Validate",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/addresses/validate",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"addresses",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pickups Delete",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/swsim/v1/pickups/WTC368269698",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"swsim",
+						"v1",
+						"pickups",
+						"WTC368269698"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Label FCI CA Customs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"SERA API\",\r\n        \"name\": \"SERA REST\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"EL SEGUNDO\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"CANADA ADDRESS\",\r\n        \"name\": \"CANADA CUSTOMS\",\r\n        \"address_line1\": \"212 Blunt Creek Rd\",\r\n        \"city\": \"Smithers\",\r\n        \"state_province\": \"BC\",\r\n        \"postal_code\": \"V0J 2N1\",\r\n        \"country_code\": \"CA\",\r\n        \"phone\": \"3104825800\"\r\n    },\r\n    \"service_type\": \"usps_priority_mail_international\",\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 119.2,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"customs\": {\r\n        \"contents_type\": \"merchandise\",\r\n        \"non_delivery_option\": \"return_to_sender\",\r\n        \"customs_items\": [\r\n            {\r\n                \"item_description\": \"GDR001102 - Bliss Protein [30 SERV] [Vanilla]\",\r\n                \"quantity\": 2,\r\n                \"unit_value\": {\r\n                    \"amount\": 50.4,\r\n                    \"currency\": \"USD\"\r\n                },\r\n                \"item_weight\": 57.6,\r\n                \"weight_unit\": \"ounce\",\r\n                \"country_of_origin\": \"US\",\r\n                \"sku\": \"GDR001102\"\r\n            },\r\n            {\r\n                \"item_description\": \"GDR902101 - Shaker [White]\",\r\n                \"quantity\": 1,\r\n                \"unit_value\": {\r\n                    \"amount\": 5,\r\n                    \"currency\": \"USD\"\r\n                },\r\n                \"item_weight\": 4,\r\n                \"weight_unit\": \"ounce\",\r\n                \"country_of_origin\": \"US\",\r\n                \"sku\": \"GDR902101\"\r\n            }\r\n        ]\r\n    },\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"base64\"\r\n    },\r\n    \"references\": {\r\n        \"reference1\": \"38273\",\r\n        \"reference2\": 2396816\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Label PME",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);\r",
+							"pm.collectionVariables.set(\"tracking_number\", jsonData.tracking_number);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"STAMPS\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"return_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\",\r\n        \"residential_indicator\": \"unknown\"\r\n    },\r\n    \"service_type\": \"usps_priority_mail_express\",\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 69.99,\r\n        \"weight_unit\": \"ounce\"\r\n    },\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"is_return_label\": true,\r\n    \"customs\": {\r\n        \"contents_type\": \"gift\",\r\n        \"contents_description\": \"Gift car\",\r\n        \"non_delivery_option\": \"return_to_sender\",\r\n        \"sender_info\": {\r\n            \"license_number\": \"lic123456\",\r\n            \"certificate_number\": \"cet123456\",\r\n            \"invoice_number\": \"8981664181\",\r\n            \"internal_transaction_number\": \"9515623967\",\r\n            \"passport_number\": \"H0454KJY12\",\r\n            \"passport_issue_date\": \"2001-02-17\",\r\n            \"passport_expiration_date\": \"2021-02-18\"\r\n        },\r\n        \"recipient_info\": {\r\n            \"tax_id\": \"tax124565\"\r\n        },\r\n        \"customs_items\": [\r\n            {\r\n                \"item_description\": \"item\",\r\n                \"quantity\": 2,\r\n                \"unit_value\": {\r\n                    \"amount\": 1,\r\n                    \"currency\": \"usd\"\r\n                },\r\n                \"item_weight\": 1,\r\n                \"weight_unit\": \"ounce\",\r\n                \"country_of_origin\": \"US\",\r\n                \"sku\": \"sku123446\"\r\n            }\r\n        ]\r\n    },\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"advanced_options\": {\r\n        \"non_machinable\": true,\r\n        \"saturday_delivery\": false,\r\n        \"delivered_duty_paid\": false,\r\n        \"hold_for_pickup\": false,\r\n        \"certified_mail\": false,\r\n        \"return_receipt\": false,\r\n        \"return_receipt_electronic\": false,\r\n        \"sunday_delivery\": false,\r\n        \"holiday_delivery\": false,\r\n        \"1030_delivery\": false,\r\n        \"restricted_delivery\": false,\r\n        \"notice_of_non_delivery\": false,\r\n        \"is_instalabel\": false,\r\n        \"is_pay_on_use\": false\r\n    },\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"url\"\r\n    },\r\n    \"references\": {\r\n        \"printed_message1\": \"Printed message 1 with 36 characters123\",\r\n        \"printed_message2\": \"Prntd msg 2 with 31 characters123\",\r\n        \"printed_message3\": \"Prntd msg 2 with 31 characters123\",\r\n        \"cost_code_id\": 0,\r\n        \"reference1\": \"reference 1\",\r\n        \"reference2\": \"reference 2\",\r\n        \"reference3\": \"reference 3\",\r\n        \"reference4\": \"reference 4\"\r\n    },\r\n    \"is_test_label\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Label pour paired",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"Claims Processing Ctr \",\r\n        \"address_line1\": \"P.O. Box 349\",\r\n        \"city\": \"Toronto\",\r\n        \"state_province\": \"Ohio\",\r\n        \"country_code\": \"US\",\r\n        \"postal_code\": \"43964\"\r\n    },\r\n    \"service_type\": \"usps_first_class_mail\",\r\n    \"ship_date\": \"2023-08-02\",\r\n    \"package\": {\r\n        \"weight\": \"10\",\r\n        \"width\": \"10\",\r\n        \"height\": \"13\",\r\n        \"packaging_type\": \"large_envelope\"\r\n    },\r\n    \"is_return_label\": true,\r\n    \"advanced_options\": {\r\n        \"is_pay_on_use\": true,\r\n        \"return_options\": {\r\n            \"outbound_label_id\": \"bbe9f570-eec4-4bf9-80e1-905fa4c2f6e9\"\r\n        }\r\n    },\r\n    \"label_options\": {\r\n        \"label_format\": \"png\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Label pour standalone priority mail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_test_label\": \"false\",\r\n    \"service_type\": \"usps_priority_mail\",\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"from_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"return_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"SERA\",\r\n        \"name\": \"STAMPSDICIA\",\r\n        \"address_line1\": \"1990 E GRAND AVE\",\r\n        \"city\": \"El Segundo\",\r\n        \"state_province\": \"CA\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"3104825800\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 1,\r\n        \"weight_unit\": \"ounce\",\r\n        \"length\": 5,\r\n        \"width\": 5,\r\n        \"height\": 5,\r\n        \"dimension_unit\": \"inch\"\r\n    },\r\n    \"is_return_label\": true,\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"advanced_options\": {\r\n        \"is_pay_on_use\": true\r\n    },\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"url\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Label pour standalone ground advantage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"label_id\", jsonData.label_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_test_label\": \"false\",\r\n    \"service_type\": \"usps_ground_advantage\",\r\n    \"ship_date\": \"{{$isoTimestamp}}\",\r\n    \"from_address\": {\r\n        \"company_name\": \"stamps rest\",\r\n        \"name\": \"sera rest\",\r\n        \"address_line1\": \"1990 e grand ave\",\r\n        \"city\": \"[el segundo\",\r\n        \"state_province\": \"ca\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"us\",\r\n        \"phone\": \"12345678\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"return_address\": {\r\n        \"company_name\": \"stamps sera\",\r\n        \"name\": \"sera\",\r\n        \"address_line1\": \"1990 e grand ave\",\r\n        \"city\": \"[el segundo\",\r\n        \"state_province\": \"ca\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"us\",\r\n        \"phone\": \"12345678\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"to_address\": {\r\n        \"company_name\": \"stamps sera\",\r\n        \"name\": \"sera\",\r\n        \"address_line1\": \"1990 e grand ave\",\r\n        \"city\": \"el segundo\",\r\n        \"state_province\": \"ca\",\r\n        \"postal_code\": \"90245\",\r\n        \"country_code\": \"us\",\r\n        \"phone\": \"12345678\",\r\n        \"email\": \"no-reply@stamps.com\"\r\n    },\r\n    \"package\": {\r\n        \"packaging_type\": \"package\",\r\n        \"weight\": 1,\r\n        \"weight_unit\": \"ounce\",\r\n        \"length\": 5,\r\n        \"width\": 5,\r\n        \"height\": 5,\r\n        \"dimension_unit\": \"inch\"\r\n    },\r\n    \"is_return_label\": true,\r\n    \"delivery_confirmation_type\": \"tracking\",\r\n    \"advanced_options\": {\r\n        \"is_pay_on_use\": true\r\n    },\r\n    \"label_options\": {\r\n        \"label_size\": \"4x6\",\r\n        \"label_format\": \"pdf\",\r\n        \"label_logo_image_id\": 0,\r\n        \"label_output_type\": \"url\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Void Label",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/labels/72e08699-ccf2-4373-8789-7dd4edac81b9/void",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"labels",
+						"72e08699-ccf2-4373-8789-7dd4edac81b9",
+						"void"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auto-purchase-settings",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/balance/auto-purchase-settings",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"balance",
+						"auto-purchase-settings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracking",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/tracking?carrier=usps&tracking_number={{tracking_number}}",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "carrier",
+							"value": "usps"
+						},
+						{
+							"key": "tracking_number",
+							"value": "9400111899562060635564",
+							"disabled": true
+						},
+						{
+							"key": "tracking_number",
+							"value": "{{tracking_number}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/account",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"account"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Account",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "integration-id",
+								"value": "{{integrationId}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{sera_host}}/sera/v1/account",
+							"host": [
+								"{{sera_host}}"
+							],
+							"path": [
+								"sera",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 25 Aug 2021 18:18:21 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1870"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "apigw-requestid",
+							"value": "EoppJgn-SK4EMHA="
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "expires",
+							"value": "-1"
+						},
+						{
+							"key": "X-PROCESSED-BY-DIVISION",
+							"value": "1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "GID",
+							"value": "3aa3f88b-d93d-4a02-90bc-4ddb09c60635"
+						},
+						{
+							"key": "X-AspNet-Version",
+							"value": "4.0.30319"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "x-xss-protection",
+							"value": "1;mode=block"
+						},
+						{
+							"key": "content-security-policy",
+							"value": "frame-ancestors http://*.stamps.com https://*.stamps.com"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Set Autobuy Settings",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"enable_auto_purchase\": true,\r\n    \"auto_purchase_amount\": 45000.00,\r\n    \"auto_purchase_threshold\": 6000.00,\r\n    \"currency\": \"usd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sera_base_url}}/sera/v1/balance/auto-purchase-settings",
+					"host": [
+						"{{sera_base_url}}"
+					],
+					"path": [
+						"sera",
+						"v1",
+						"balance",
+						"auto-purchase-settings"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessTokenUrl",
+				"value": "{{endicia_base_url}}/oauth/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{endicia_base_url}}/authorize",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{client_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "state",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code_with_pkce",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "{{redirect_uri}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "T2 SERA",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "offline_access",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{client_id}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "sera_base_url",
+			"value": "https://api.stampsendicia.com/"
+		},
+		{
+			"key": "endicia_base_url",
+			"value": "https://signin.stampsendicia.com"
+		},
+		{
+			"key": "client_id",
+			"value": ""
+		},
+		{
+			"key": "client_secret",
+			"value": ""
+		},
+		{
+			"key": "redirect_uri",
+			"value": ""
+		},
+		{
+			"key": "code",
+			"value": ""
+		},
+		{
+			"key": "grant_type",
+			"value": ""
+		}
+	]
+}
