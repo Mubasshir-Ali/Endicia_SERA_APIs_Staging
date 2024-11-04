@@ -741,11 +741,12 @@
 				{
 					"listen": "test",
 					"script": {
+						"id": "84b3e752-24e6-43a0-aa76-aee92f5275da",
 						"exec": [
 							""
 						],
 						"type": "text/javascript",
-						"id": "84b3e752-24e6-43a0-aa76-aee92f5275da"
+						"packages": {}
 					}
 				}
 			],
@@ -754,8 +755,17 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -765,7 +775,7 @@
 						}
 					}
 				},
-				"url": "{{sera_host}}/sera/v1/labels/72e08699-ccf2-4373-8789-7dd4edac81b9/void"
+				"url": "{{sera_base_url}}/labels/{{label_id}}/void"
 			},
 			"response": []
 		}
