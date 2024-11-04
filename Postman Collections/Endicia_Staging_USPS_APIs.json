@@ -734,6 +734,40 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Void Label V1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"id": "84b3e752-24e6-43a0-aa76-aee92f5275da"
+					}
+				}
+			],
+			"id": "f21abb6a-2165-4f1d-a046-4a3d84c346d0",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_host}}/sera/v1/labels/72e08699-ccf2-4373-8789-7dd4edac81b9/void"
+			},
+			"response": []
 		}
 	],
 	"auth": {
