@@ -670,7 +670,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"EDJY LLC\",\r\n        \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\"\r\n    },\r\n    \"label_ids\": [\r\n        // \"1abdc053-7be0-4568-82ab-96748d1b5f70\",\r\n        // \"8a67f124-7209-45f9-bf23-449d93b73b2e\",\r\n        \"8d9dafad-8b6e-41f9-9389-79445c45049b\"\r\n    ],\r\n    \"label_options\": {\r\n        \"label_format\": \"pdf\",\r\n        \"print_instructions\": true\r\n        // \"label_output_type\": \"base64\"\r\n    }\r\n}\r\n",
+					"raw": "{\r\n    \"from_address\": {\r\n        \"name\": \"EDJY LLC\",\r\n        \"address_line1\": \"2119 Riverwalk Dr STE 217\",\r\n        \"city\": \"Ann Arbor\",\r\n        \"state_province\": \"MI\",\r\n        \"postal_code\": \"73160\",\r\n        \"country_code\": \"US\",\r\n        \"phone\": \"208-418-1298\",\r\n        \"email\": \"test@edjy.com\"\r\n    },\r\n    \"label_ids\": [\r\n        // \"1abdc053-7be0-4568-82ab-96748d1b5f70\",\r\n        // \"8a67f124-7209-45f9-bf23-449d93b73b2e\",\r\n        \"f113f4f0-9d51-4d64-aa2a-7a965a393975\"\r\n    ],\r\n    \"label_options\": {\r\n        \"label_format\": \"pdf\",\r\n        \"print_instructions\": true\r\n        // \"label_output_type\": \"base64\"\r\n    }\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
