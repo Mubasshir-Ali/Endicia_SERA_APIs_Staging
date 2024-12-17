@@ -328,7 +328,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"amount\": 7800.00,\r\n    \"currency\": \"usd\"\r\n}",
+					"raw": "{\r\n    \"amount\": 4000.00,\r\n    \"currency\": \"usd\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
