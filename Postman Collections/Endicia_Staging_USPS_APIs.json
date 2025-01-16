@@ -671,6 +671,67 @@
 			"response": []
 		},
 		{
+			"name": "Create Domestic Label V5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0cdb072-4460-4174-a138-0a916ac55c8f",
+						"exec": [
+							"const jsonData = JSON.parse(pm.response.text());\r",
+							"pm.collectionVariables.set(\"label_id\", jsonData.label_id);\r",
+							"pm.collectionVariables.set(\"tracking_number\", jsonData.tracking_number);\r",
+							"pm.environment.set(\"label_id\", jsonData.label_id);\r",
+							"pm.environment.set(\"tracking_number\", jsonData.tracking_number);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "578dbb12-f4f4-4b67-911f-5235d1bc0d87",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Idempotency-Key",
+						"value": "{{$guid}}",
+						"description": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "ship_date",
+						"value": "{{$isoTimestamp}}",
+						"description": "Ship Date",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"to_address\": {\r\n    \"name\": \"Kyle Moore\",\r\n    \"address_line1\": \"PSC 411 Box 2666\",\r\n    \"address_line2\": \"\",\r\n    \"address_line3\": \"\",\r\n    \"city\": \"APO\",\r\n    \"state_province\": \"AE\",\r\n    \"postal_code\": \"09112\",\r\n    \"country_code\": \"US\"\r\n  },\r\n  \"from_address\": {\r\n    \"name\": \"EDJY LLC\",\r\n    \"address_line1\": \"317 Metty Dr\",\r\n    \"address_line2\": \"Suite 4\",\r\n    \"address_line3\": \"\",\r\n    \"city\": \"Ann Arbor\",\r\n    \"state_province\": \"MI\",\r\n    \"postal_code\": \"48103\",\r\n    \"country_code\": \"US\"\r\n  },\r\n  \"ship_date\": \"1/16/2025\",\r\n  \"service_type\": \"usps_priority_mail\",\r\n  \"package\": {\r\n    \"packaging_type\": \"package\",\r\n    \"weight\": \"0.94\",\r\n    \"weight_unit\": \"pound\"\r\n  },\r\n  \"label_options\": {\r\n    \"label_size\": \"4x6\",\r\n    \"label_format\": \"png\",\r\n    \"label_output_type\": \"base64\"\r\n  },\r\n  \"is_test_label\": false,\r\n  \"customs\": {\r\n    \"contents_type\": \"merchandise\",\r\n    \"customs_items\": [\r\n      {\r\n        \"item_description\": \"NFBL001\",\r\n        \"quantity\": 2,\r\n        \"unit_value\": {\r\n          \"amount\": 35.4,\r\n          \"currency\": \"usd\"\r\n        },\r\n        \"item_weight\": \"0.24\",\r\n        \"weight_unit\": \"pound\",\r\n        \"country_of_origin\": \"US\"\r\n      },\r\n      {\r\n        \"item_description\": \"NFBL2PK\",\r\n        \"quantity\": 1,\r\n        \"unit_value\": {\r\n          \"amount\": 30,\r\n          \"currency\": \"usd\"\r\n        },\r\n        \"item_weight\": \"0.46\",\r\n        \"weight_unit\": \"pound\",\r\n        \"country_of_origin\": \"US\"\r\n      },\r\n      {\r\n        \"item_description\": \"NFBL001\",\r\n        \"quantity\": 2,\r\n        \"unit_value\": {\r\n          \"amount\": 0,\r\n          \"currency\": \"usd\"\r\n        },\r\n        \"item_weight\": \"0.24\",\r\n        \"weight_unit\": \"pound\",\r\n        \"country_of_origin\": \"US\"\r\n      }\r\n    ]\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{sera_base_url}}/labels"
+			},
+			"response": []
+		},
+		{
 			"name": "Create SCAN Form Label Shipment",
 			"id": "ec77ac42-a554-4e01-9252-f91b8dd06be3",
 			"protocolProfileBehavior": {
